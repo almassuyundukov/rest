@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.easyum.rest.entity.Employee;
+import ru.easyum.rest.exception.EmployeeNotFoundException;
 
 import java.util.List;
 
@@ -45,6 +46,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public void deleteEmployeeById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        session.createQuery("delete from Employee where id =:id ", Employee.class).executeUpdate();
+        Employee deleteEmployee = findEmployeeById(id);
+        if(deleteEmployee == null) throw new EmployeeNotFoundException("Employee with id" + id + "is not found");
+        session.delete(deleteEmployee);
+
     }
 }
